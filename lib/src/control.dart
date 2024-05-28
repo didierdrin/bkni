@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bkni/src/help.dart';
+
 import 'cart.dart';
 import 'package:bkni/src/currentprofile.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,6 @@ import 'favorite.dart';
 // import 'profile.dart';
 import 'notifications.dart';
 
-
 class ControlPage extends StatefulWidget {
   const ControlPage({super.key, required this.customIndex});
   final int customIndex;
@@ -32,17 +33,14 @@ class _ControlPageState extends State<ControlPage> {
 
   static int _pageIndex = 0;
 
-  
   @override
   void initState() {
     super.initState();
     _pageIndex = widget.customIndex;
-    
   }
 
   @override
   void dispose() {
-    
     super.dispose();
   }
 
@@ -186,13 +184,20 @@ class _ControlPageState extends State<ControlPage> {
                 leading: const Icon(Icons.shopping_cart),
                 title: const Text("My Cart"), // Order History
               ),
-              const ListTile(
-                leading: Icon(Icons.history_rounded),
-                title: Text("Order History"), // Order History
+              ListTile(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const HelpPage()));
+                },
+                leading: const Icon(Icons.history_rounded),
+                title: const Text("Order History"), // Order History
               ),
-              const ListTile(
-                leading: Icon(Icons.help),
-                title: Text("Help"), // Order History
+              ListTile(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> const HelpPage()));
+                },
+                leading: const Icon(Icons.help),
+                title: const Text("Help"), // Order History
               ),
               const ListTile(
                 leading: Icon(Icons.settings_outlined),
