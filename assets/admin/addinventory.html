@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Bukon! IMS</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <div class="flex flex-col container mx-auto px-4">
+            <div class="h-[50px] bg-green-400">
+                <h1 class="text-3xl my-4 float-left">Bukon! Inventory</h1>
+                <h2 class="text-2xl float-right text-green-100"><a href="index.html"><i class="fa fa-home"></i></a></h2>
+            </div>
+            
+            <form>
+                <div class="container py-8">
+                    
+                    <p>Please fill in the form to register the product.</p>
+                    <hr>
+                    <label><b>Name</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Name" id="name" required> 
+                    <br><br>
+                    <label><b>Color</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Color" id="color" required> 
+                    <br><br>
+                    <label><b>Quantity</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Quantity" id="quantity" required> 
+                    <br><br>
+                    <label><b>Size</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Size" id="size" required> 
+                    <br><br>
+                    <label><b>Price</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Price" id="price" required> 
+                    <br><br>
+                    <label><b>Product ID</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Product ID" id="product_id" required> 
+                    <br><br>
+                    <label><b>Product Photo URL</b></label>
+                    <input class="border border-green-200 px-4" type="text" placeholder="Product Img URL" id="img_url" required> 
+                    <br><br>
+                    
+                    <label><b>Description</b></label>
+                    <textarea class="border border-green-200 px-4" type="text" placeholder="Description" id="description" cols="64" rows="4"></textarea>
+                    
+                    <hr>
+                    <button type="button" id="submitData" class="text-xl bg-green-200 my-8 py-2 px-4">Submit</button>
+                </div>
+            </form>
+        </div>
+        <script type="module" src="script.js" async defer></script>
+    </body>
+</html>
