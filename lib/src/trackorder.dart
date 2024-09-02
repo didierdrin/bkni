@@ -12,12 +12,8 @@ import 'package:intl/intl.dart';
 class TrackOrderPage extends StatefulWidget {
   const TrackOrderPage(
       {super.key,
-      required this.name,
-      required this.imgUrl,
-      required this.price});
-  final String name;
-  final String imgUrl;
-  final String price;
+      required this.product});
+  final ProductData product; 
   @override
   State<TrackOrderPage> createState() => _TrackOrderPageState();
 }
@@ -41,7 +37,10 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
           IconButton(
               onPressed: () {
                 // Navigator.pop(context);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ControlPage(customIndex: 0)));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ControlPage(customIndex: 0, product: widget.product)));
               },
               icon: const Icon(Icons.history_rounded))
         ],
@@ -95,14 +94,16 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio(
-                              value: false,
-                              groupValue: isChecked,
-                              onChanged: (value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                              VerticalDivider(color: mcgpalette0[50],),
+                                  value: false,
+                                  groupValue: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  }),
+                              VerticalDivider(
+                                color: mcgpalette0[50],
+                              ),
                             ],
                           ),
                           title: RichText(
@@ -118,21 +119,21 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
                           ])),
                         ),
 
-                        
-
                         ListTile(
                           leading: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio(
-                              value: false,
-                              groupValue: isChecked,
-                              onChanged: (value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                              VerticalDivider(color: mcgpalette0[100],),
+                                  value: false,
+                                  groupValue: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  }),
+                              VerticalDivider(
+                                color: mcgpalette0[100],
+                              ),
                             ],
                           ),
                           title: RichText(
@@ -153,14 +154,16 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio(
-                              value: false,
-                              groupValue: isChecked,
-                              onChanged: (value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                              VerticalDivider(color: mcgpalette0[400],),
+                                  value: false,
+                                  groupValue: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  }),
+                              VerticalDivider(
+                                color: mcgpalette0[400],
+                              ),
                             ],
                           ),
                           title: RichText(
@@ -181,14 +184,16 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio(
-                              value: false,
-                              groupValue: isChecked,
-                              onChanged: (value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                              VerticalDivider(color: mcgpalette0[900],),
+                                  value: false,
+                                  groupValue: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  }),
+                              VerticalDivider(
+                                color: mcgpalette0[900],
+                              ),
                             ],
                           ),
                           title: RichText(
@@ -211,14 +216,16 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio(
-                              value: false,
-                              groupValue: isChecked,
-                              onChanged: (value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
-                              }),
-                              const VerticalDivider(color: Colors.black,),
+                                  value: false,
+                                  groupValue: isChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isChecked = value!;
+                                    });
+                                  }),
+                              const VerticalDivider(
+                                color: Colors.black,
+                              ),
                             ],
                           ),
                           title: RichText(

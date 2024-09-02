@@ -1,0 +1,1276 @@
+Done codes 
+++++++++++ 
+// Payment Options - "Checkout button from CartPage navigate here".
+import 'package:bkni/src/trackorder.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
+import 'package:bkni/src/confirm.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+// import 'package:bkni/colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_paystack/flutter_paystack.dart';
+import 'momo.dart';
+
+class PaymentOptions extends StatefulWidget {
+  const PaymentOptions(
+      {super.key,
+      required this.name,
+      required this.imgUrl,
+      required this.price});
+
+  final String name;
+  final String imgUrl;
+  final String price;
+  @override
+  State<PaymentOptions> createState() => _PaymentOptions();
+}
+
+class _PaymentOptions extends State<PaymentOptions> {
+  final int _counter = 0;
+  final String imageVector = "assets/images/img_vector.svg";
+  // For Payments
+  final String paypallogo = "assets/images/logos_paypalpaypal logo svg.svg";
+  final String paypalname = "assets/images/fontisto_paypalpaypalsvg.svg";
+  final String cardsvg = "assets/images/ion_card-outlinecardsvg.svg";
+  final String mtnlogo = "assets/images/mtn.png";
+
+  @override
+  Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Choose Payment Method"),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Order Total
+              Container(
+                height: 130.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color(0xFF000000), // const Color(0xFF616161),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Order Total",
+                            style: TextStyle(color: Color(0xFFFFFFFF))),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          "Discount \n5$_counter% OFF",
+                          style: const TextStyle(color: Color(0xFF616161)),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    ),
+                    // Image Section
+                    const Center(
+                      child: Text("RWF 14,000",
+                          style: TextStyle(color: Color(0xFFFFFFFF))),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(2.0, 10.0, 0.0, 0.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Recommended",
+                    style: TextStyle(color: Colors.black87, fontSize: 15),
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        final request = BraintreeDropInRequest(
+                          tokenizationKey: "sandbox_fwc29vc6_nr2dhwmg7vgqfw94",
+                          collectDeviceData: true,
+                          cardEnabled: true,
+                        );
+                        BraintreeDropInResult? result =
+                            await BraintreeDropIn.start(request);
+                        if (result != null) {
+                          print('Card payment successful: $result');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const ConfirmPage(
+                                      name: "Some name",
+                                      imgUrl: "Some URL",
+                                      price: "Some Price")));
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              // Combine label and content into a single Row for top alignment
+                              content: const Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .start, // Align content horizontally
+                                children: [
+                                  Text(
+                                      "Payment executed\nsuccessfully!"), // Short text at the end
+                                  Flexible(
+                                    // Makes label text wrap if needed
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "",
+                                        style: TextStyle(
+                                            fontSize:
+                                                14), // Adjust font size as needed
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.greenAccent,
+                              action: SnackBarAction(
+                                label: "Track your order",
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const TrackOrderPage(
+                                              name: "Some name",
+                                              imgUrl: "Some imgUrl",
+                                              price: "Some price")));
+                                  // Navigator.pop(context);
+                                }, // On-click action
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        } else {
+                          print('Card payment failed');
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              // Combine label and content into a single Row for top alignment
+                              content: const Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .start, // Align content horizontally
+                                children: [
+                                  Text(
+                                      "Payment failed\nReason: Card declined"), // Short text at the end
+                                  Flexible(
+                                    // Makes label text wrap if needed
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "",
+                                        style: TextStyle(
+                                            fontSize:
+                                                14), // Adjust font size as needed
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.redAccent,
+                              action: SnackBarAction(
+                                label: "Choose Payment Option",
+                                onPressed: () {
+                                  // Navigator.pop(context);
+                                }, // On-click action
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+                      child: Card(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: Container(
+                          width: 120,
+                          height: 130,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Center(
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: SvgPicture.asset(
+                                    cardsvg,
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.black, BlendMode.srcIn),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              const Text(
+                                "Card Payment",
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
+                              const Text(
+                                "Visa, MasterCard",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const MomoPage()));
+                        
+                      },
+                      child: Card(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: Container(
+                          width: 120,
+                          height: 130,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Center(
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Image.asset(mtnlogo),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              const Text(
+                                "MomoPay",
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.bold),
+                              ),
+                              const Text(
+                                "MTN",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Padding(
+                padding: EdgeInsets.fromLTRB(2.0, 10.0, 0.0, 0.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Alternative methods",
+                    style: TextStyle(color: Colors.black87, fontSize: 15),
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        final request = BraintreeDropInRequest(
+                          tokenizationKey: "sandbox_fwc29vc6_nr2dhwmg7vgqfw94",
+                          collectDeviceData: true,
+                          paypalRequest: BraintreePayPalRequest(
+                              amount: "10.0", currencyCode: "USD"),
+                        );
+
+                        BraintreeDropInResult? result =
+                            await BraintreeDropIn.start(request);
+                        if (result != null) {
+                          print("PayPal payment successful: $result");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const ConfirmPage(
+                                      name: "Some name",
+                                      imgUrl: "Some URL",
+                                      price: "Some Price")));
+                        } else {
+                          print("Paypal payment failed");
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              // Combine label and content into a single Row for top alignment
+                              content: const Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .start, // Align content horizontally
+                                children: [
+                                  Text(
+                                      "Payment failed\nReason:"), // Short text at the end
+                                  Flexible(
+                                    // Makes label text wrap if needed
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "",
+                                        style: TextStyle(
+                                            fontSize:
+                                                14), // Adjust font size as needed
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.redAccent,
+                              action: SnackBarAction(
+                                label: "Choose Payment Option",
+                                onPressed: () {
+                                  // Navigator.pop(context);
+                                }, // On-click action
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+                      child: Card(
+                        //elevation: 1.0,
+                        color: Colors.white,
+                        child: Container(
+                          width: 120,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Center(
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: SvgPicture.asset(paypallogo),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              const Text(
+                                "System that supports",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                              const Text(
+                                "Online payments.",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
++++ Latest paymentoptions page 
+import 'package:bkni/src/trackorder.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
+import 'package:bkni/src/confirm.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'momo.dart';
+
+class PaymentOptions extends StatefulWidget {
+  const PaymentOptions({
+    super.key,
+    required this.name,
+    required this.imgUrl,
+    required this.price,
+  });
+
+  final String name;
+  final String imgUrl;
+  final String price;
+  @override
+  State<PaymentOptions> createState() => _PaymentOptions();
+}
+
+class _PaymentOptions extends State<PaymentOptions> {
+  final int _counter = 0;
+  final String imageVector = "assets/images/img_vector.svg";
+  final String paypallogo = "assets/images/logos_paypalpaypal logo svg.svg";
+  final String paypalname = "assets/images/fontisto_paypalpaypalsvg.svg";
+  final String cardsvg = "assets/images/ion_card-outlinecardsvg.svg";
+  final String mtnlogo = "assets/images/mtn.png";
+
+  @override
+  Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Choose Payment Method"),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                height: 130.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color(0xFF000000),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Order Total",
+                            style: TextStyle(color: Color(0xFFFFFFFF))),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          "Discount \n5$_counter% OFF",
+                          style: const TextStyle(color: Color(0xFF616161)),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    ),
+                    Center(
+                      child: Text("RWF ${widget.price}",
+                          style: const TextStyle(color: Color(0xFFFFFFFF))),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(2.0, 10.0, 0.0, 0.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Recommended",
+                    style: TextStyle(color: Colors.black87, fontSize: 15),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        final request = BraintreeDropInRequest(
+                          tokenizationKey: "sandbox_fwc29vc6_nr2dhwmg7vgqfw94",
+                          collectDeviceData: true,
+                          cardEnabled: true,
+                        );
+                        BraintreeDropInResult? result =
+                            await BraintreeDropIn.start(request);
+                        if (result != null) {
+                          print('Card payment successful: $result');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => ConfirmPage(
+                                      name: widget.name,
+                                      imgUrl: widget.imgUrl,
+                                      price: widget.price)));
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              content: const Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Payment executed\nsuccessfully!"),
+                                  Flexible(
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.greenAccent,
+                              action: SnackBarAction(
+                                label: "Track your order",
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => TrackOrderPage(
+                                              name: widget.name,
+                                              imgUrl: widget.imgUrl,
+                                              price: widget.price)));
+                                },
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        } else {
+                          print('Card payment failed');
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              content: const Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Payment failed\nReason: Card declined"),
+                                  Flexible(
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        "",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.redAccent,
+                              action: SnackBarAction(
+                                label: "Choose Payment Option",
+                                onPressed: () {},
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+                      child: Card(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: Container(
+                          width: 120,
+                          height: 130,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Center(
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: SvgPicture.asset(
+                                    cardsvg,
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.black, BlendMode.srcIn),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              const Text(
+                                "Card Payment",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Add more payment options here if needed
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// here's the cart.dart page: previous 
+import 'package:bkni/colors.dart';
+import 'package:bkni/src/paymentoptions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+import 'cartcontroller.dart';
+
+class CartPage extends StatefulWidget {
+  const CartPage({
+    super.key,
+    required this.name,
+    required this.imgUrl,
+    required this.price,
+  });
+  final String name;
+  final String imgUrl;
+  final String price;
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  final cartController = Get.put(CartController());
+  final isCheckedMap = <String, bool>{};
+
+  @override
+  void initState() {
+    super.initState();
+    cartController.loadCartItems();
+  }
+
+  void updateCheckedState(String imgUrl, bool value) {
+    setState(() {
+      isCheckedMap[imgUrl] = value;
+    });
+  }
+
+  void reloadPage() {
+    setState(() {
+      // This empty setState will trigger a rebuild of the widget
+    });
+  }
+
+  double calculateTotalPrice() {
+    double total = 0;
+    for (var item in cartController.cartItems) {
+      if (isCheckedMap[item['imgUrl']] == true) {
+        total += (double.parse(item['price'].replaceAll('RWF', '')) * (item['quantity'] ?? 1));
+      }
+    }
+    return total;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 0.0,
+        centerTitle: true,
+        title: const Text("Cart"),
+        actions: [
+          IconButton(
+            onPressed: () => showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Confirm Delete"),
+                content: const Text(
+                    "Are you sure you want to delete the selected items from your cart?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text("No"),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                      final checkedItems = cartController.cartItems
+                          .where((item) => isCheckedMap[item['imgUrl']] == true)
+                          .toList();
+                      if (checkedItems.isNotEmpty) {
+                        for (var item in checkedItems) {
+                          cartController.removeFromCart(item['imgUrl']);
+                          isCheckedMap.remove(item['imgUrl']);
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(color: Colors.red[100]),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            icon: const Icon(Icons.delete_outline_rounded),
+          ),
+        ],
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: cartController.cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cartController.cartItems[index];
+                        bool isChecked = isCheckedMap[item['imgUrl']] ?? false;
+
+                        return ListTile(
+                          leading: Checkbox(
+                            value: isChecked,
+                            onChanged: (value) {
+                              updateCheckedState(item['imgUrl'], value!);
+                              reloadPage(); // Trigger rebuild to update total price
+                            },
+                          ),
+                          title: Text(
+                            item['name'],
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          subtitle: Text(
+                            "US 6\nRWF${item['price']}",
+                            style: const TextStyle(fontSize: 8),
+                          ),
+                          trailing: SizedBox(
+                            width: 120,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                QuantityButton(
+                                  icon: Icons.remove,
+                                  onPressed: () {
+                                    cartController.decrementQuantity(item['imgUrl']);
+                                  },
+                                  onQuantityChanged: reloadPage,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "${item['quantity'] ?? 1}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                const SizedBox(width: 8),
+                                QuantityButton(
+                                  icon: Icons.add,
+                                  onPressed: () {
+                                    cartController.incrementQuantity(item['imgUrl']);
+                                  },
+                                  onQuantityChanged: reloadPage,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    )),
+                SizedBox(height: 80 + MediaQuery.of(context).padding.bottom),  // Add space for the checkout button
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ElevatedButton(
+                onPressed: () {
+                  final checkedItems = cartController.cartItems
+                      .where((item) => isCheckedMap[item['imgUrl']] == true)
+                      .toList();
+                  if (checkedItems.isNotEmpty) {
+                    double totalPrice = calculateTotalPrice();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaymentOptions(
+                          name: checkedItems.first['name'],
+                          imgUrl: checkedItems.first['imgUrl'],
+                          price: totalPrice.toString(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          "Please select an item to proceed to payment options.",
+                        ),
+                        backgroundColor: Colors.redAccent,
+                        action: SnackBarAction(
+                          label: "View Cart",
+                          onPressed: () {},
+                        ),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF159954),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  "Checkout (RWF ${calculateTotalPrice().toStringAsFixed(2)})",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuantityButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final VoidCallback onQuantityChanged;
+
+  const QuantityButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    required this.onQuantityChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        color: mcgpalette0,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white, size: 18),
+        onPressed: () {
+          onPressed();
+          onQuantityChanged();
+        },
+        padding: EdgeInsets.zero,
+      ),
+    );
+  }
+}
+
+
+----
+
+Payment Options 
+
+
+// import 'package:bkni/src/trackorder.dart';
+// import 'package:flutter_braintree/flutter_braintree.dart';
+// import 'package:bkni/src/confirm.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'momo.dart';
+// import 'home.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+
+// class PaymentOptions extends StatefulWidget {
+//   final ProductData product;
+//   const PaymentOptions({super.key, required this.product});
+
+//   @override
+//   State<PaymentOptions> createState() => _PaymentOptions();
+// }
+
+// class _PaymentOptions extends State<PaymentOptions> {
+//   final int _counter = 0;
+//   final String imageVector = "assets/images/img_vector.svg";
+//   // For Payments
+//   final String paypallogo = "assets/images/logos_paypalpaypal logo svg.svg";
+//   final String paypalname = "assets/images/fontisto_paypalpaypalsvg.svg";
+//   final String cardsvg = "assets/images/ion_card-outlinecardsvg.svg";
+//   final String mtnlogo = "assets/images/mtn.png";
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final scaffoldMessenger = ScaffoldMessenger.of(context);
+//     return Scaffold(
+//       appBar: AppBar(
+//         centerTitle: true,
+//         title: const Text("Choose Payment Method"),
+//         systemOverlayStyle: const SystemUiOverlayStyle(
+//           statusBarColor: Colors.transparent,
+//           statusBarBrightness: Brightness.light,
+//           statusBarIconBrightness: Brightness.dark,
+//         ),
+//       ),
+//       body: SingleChildScrollView(
+//         scrollDirection: Axis.vertical,
+//         child: Padding(
+//           padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             children: [
+//               // Order Total
+//               Container(
+//                 height: 130.0,
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(20),
+//                   color: const Color(0xFF000000), // const Color(0xFF616161),
+//                 ),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                   children: [
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         const Text("Order Total",
+//                             style: TextStyle(color: Color(0xFFFFFFFF))),
+//                         const SizedBox(
+//                           height: 10.0,
+//                         ),
+//                         Text(
+//                           "Discount >>\n${widget.product.name}",
+//                           style: const TextStyle(color: Color(0xFF616161)),
+//                         ),
+//                         const SizedBox(
+//                           height: 15,
+//                         ),
+//                       ],
+//                     ),
+//                     // Image Section
+//                     Center(
+//                       child: Text("RWF ${widget.product.price}",
+//                           style: const TextStyle(color: Color(0xFFFFFFFF))),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const Padding(
+//                 padding: EdgeInsets.fromLTRB(2.0, 10.0, 0.0, 0.0),
+//                 child: Align(
+//                   alignment: Alignment.topLeft,
+//                   child: Text(
+//                     "Recommended",
+//                     style: TextStyle(color: Colors.black87, fontSize: 15),
+//                   ),
+//                 ),
+//               ),
+//               Padding(
+//                 padding: const EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 0.0),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                   children: [
+//                     InkWell(
+//                       onTap: () async {
+//                         // Get the current user ID
+//                         String userId = FirebaseAuth.instance.currentUser!.uid;
+
+//                         // Fetch customer_info and customer_shipping_address subcollections
+//                         DocumentSnapshot customerInfoSnapshot = await FirebaseFirestore.instance
+//                             .collection('users')
+//                             .doc(userId)
+//                             .collection('customer_info')
+//                             .doc('info') // Assuming the document ID is 'info'
+//                             .get();
+
+//                         DocumentSnapshot shippingAddressSnapshot = await FirebaseFirestore.instance
+//                             .collection('users')
+//                             .doc(userId)
+//                             .collection('customer_shipping_address')
+//                             .doc('address') // Assuming the document ID is 'address'
+//                             .get();
+
+//                         // Cast the data() result to Map<String, dynamic>
+//                         final customerInfoData = customerInfoSnapshot.data() as Map<String, dynamic>?;
+//                         final shippingAddressData = shippingAddressSnapshot.data() as Map<String, dynamic>?;
+
+//                         // Check if both documents exist and contain the necessary fields
+//                         if (customerInfoSnapshot.exists &&
+//                             shippingAddressSnapshot.exists &&
+//                             customerInfoData != null &&
+//                             customerInfoData.containsKey('name') &&
+//                             customerInfoData.containsKey('email') &&
+//                             shippingAddressData!.containsKey('shipping_address')) {
+                          
+//                           // Proceed with payment via Card
+//                           final request = BraintreeDropInRequest(
+//                             tokenizationKey: "sandbox_fwc29vc6_nr2dhwmg7vgqfw94",
+//                             collectDeviceData: true,
+//                             cardEnabled: true,
+//                           );
+//                           BraintreeDropInResult? result = await BraintreeDropIn.start(request);
+//                           if (result != null) {
+//                             print('Card payment successful: $result');
+
+//                             // Add order data to Firestore
+//                             await FirebaseFirestore.instance.collection('orders').add({
+//                               'client_uid': userId,
+//                               'order_id': 1, // This should be dynamically generated or managed
+//                               'order_date': Timestamp.now(),
+//                               'order_status': ['Processing'],
+//                               'payment_method': 'Card',
+//                               'payment_status': 'Successful',
+//                               'total_amount': widget.product.price * widget.product.quantity,
+//                               'items': [
+//                                 {
+//                                   'name': widget.product.name,
+//                                   'price_per_unit': widget.product.price,
+//                                   'product_id': widget.product.product_id,
+//                                   'quantity': widget.product.quantity,
+//                                   'sku': widget.product.sku,
+//                                   'total_price': widget.product.price * widget.product.quantity,
+//                                   'notes': '',
+//                                 }
+//                               ],
+//                               'shipping_method': 'DHL',
+//                               'shipping_cost': 8000,
+//                               'shipping_address': shippingAddressData!['shipping_address'],
+//                               'tracking_number': 509984,
+//                               'estimated_delivery_date': Timestamp.fromDate(
+//                                 DateTime.now().add(const Duration(days: 7)),
+//                               ),
+//                               'actual_delivery_date': null,
+//                               'discount_applied': 5000,
+//                               'subtotal': widget.product.price * widget.product.quantity,
+//                               'tax_amount': 5000,
+//                               'customer_info': {
+//                                 'name': customerInfoData['name'],
+//                                 'email': customerInfoData['email'],
+//                                 'phone': customerInfoData['phone'],
+//                                 'billing_address': customerInfoData['billing_address'],
+//                               },
+//                               'gift_message': 'Enjoy these holidays',
+//                               'coupon_code': 'M2SDFF',
+//                             });
+
+//                             Navigator.push(
+//                                 context,
+//                                 MaterialPageRoute(
+//                                     builder: (_) => ConfirmPage(product: widget.product)));
+//                             scaffoldMessenger.showSnackBar(
+//                               SnackBar(
+//                                 content: const Row(
+//                                   mainAxisAlignment: MainAxisAlignment.start,
+//                                   children: [
+//                                     Text("Payment executed\nsuccessfully!"),
+//                                     Flexible(
+//                                       child: SizedBox(
+//                                         width: 100,
+//                                         child: Text(
+//                                           "",
+//                                           style: TextStyle(fontSize: 14),
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 backgroundColor: Colors.greenAccent,
+//                                 action: SnackBarAction(
+//                                   label: "Track your order",
+//                                   onPressed: () {
+//                                     Navigator.push(
+//                                         context,
+//                                         MaterialPageRoute(
+//                                           builder: (_) => TrackOrderPage(product: widget.product),
+//                                         ));
+//                                   },
+//                                 ),
+//                                 duration: const Duration(seconds: 3),
+//                               ),
+//                             );
+//                           } else {
+//                             print('Card payment failed');
+//                             scaffoldMessenger.showSnackBar(
+//                               SnackBar(
+//                                 content: const Row(
+//                                   mainAxisAlignment: MainAxisAlignment.start,
+//                                   children: [
+//                                     Text("Payment failed\nReason: Card declined"),
+//                                     Flexible(
+//                                       child: SizedBox(
+//                                         width: 100,
+//                                         child: Text(
+//                                           "",
+//                                           style: TextStyle(fontSize: 14),
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 backgroundColor: Colors.redAccent,
+//                                 action: SnackBarAction(
+//                                   label: "Choose Payment Option",
+//                                   onPressed: () {
+//                                     // Navigator.pop(context);
+//                                   },
+//                                 ),
+//                                 duration: const Duration(seconds: 3),
+//                               ),
+//                             );
+//                           }
+//                         } else {
+//                           // Prompt user to add missing data
+//                           scaffoldMessenger.showSnackBar(
+//                             SnackBar(
+//                               content: const Row(
+//                                 mainAxisAlignment: MainAxisAlignment.start,
+//                                 children: [
+//                                   Text("Missing information\nPlease complete your profile"),
+//                                   Flexible(
+//                                     child: SizedBox(
+//                                       width: 100,
+//                                       child: Text(
+//                                         "",
+//                                         style: TextStyle(fontSize: 14),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                               backgroundColor: Colors.orangeAccent,
+//                               action: SnackBarAction(
+//                                 label: "Add Info",
+//                                 onPressed: () {
+//                                   // Navigate to the page to add customer info/shipping address
+//                                   // Navigator.push(
+//                                   //   context,
+//                                   //   // MaterialPageRoute(builder: (context) => CurrentProfile()),
+//                                   // );
+//                                 },
+//                               ),
+//                               duration: const Duration(seconds: 3),
+//                             ),
+//                           );
+//                         }
+//                       },
+//                       child: Card(
+//                         elevation: 1.0,
+//                         color: Colors.white,
+//                         child: Container(
+//                           width: 120,
+//                           height: 130,
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(20.0)),
+//                           child: Column(
+//                             children: [
+//                               const SizedBox(height: 20),
+//                               SvgPicture.asset(cardsvg, height: 50),
+//                               const SizedBox(height: 15),
+//                               const Text("Card Payment")
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     InkWell(
+//                       onTap: () {
+//                         Navigator.push(context, MaterialPageRoute(builder: (context) => MomoPage(product: widget.product)));
+//                       },
+//                       child: Card(
+//                         elevation: 1.0,
+//                         color: Colors.white,
+//                         child: Container(
+//                           width: 120,
+//                           height: 130,
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(20.0)),
+//                           child: Column(
+//                             children: [
+//                               const SizedBox(height: 20),
+//                               Image.asset(mtnlogo, height: 50),
+//                               const SizedBox(height: 15),
+//                               const Text("Mobile Payment")
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     InkWell(
+//                       onTap: () {
+//                         // Navigator.push(context, MaterialPageRoute(builder: (context) => PaypalPage(product: widget.product)));
+//                       },
+//                       child: Card(
+//                         elevation: 1.0,
+//                         color: Colors.white,
+//                         child: Container(
+//                           width: 120,
+//                           height: 130,
+//                           decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(20.0)),
+//                           child: Column(
+//                             children: [
+//                               const SizedBox(height: 20),
+//                               SvgPicture.asset(paypalname, height: 50),
+//                               const SizedBox(height: 15),
+//                               const Text("Paypal")
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+
+
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

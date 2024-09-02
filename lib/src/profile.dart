@@ -19,12 +19,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
-          padding: const EdgeInsets.only(top: 70),
+          padding: const EdgeInsets.only(top: 50),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -32,8 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 SvgPicture.asset(
                   logoName,
-                  height: 50,
-                  width: 50,
+                  height: 120,
+                  width: 120,
                 ),
                 const SizedBox(
                   height: 30,

@@ -1,4 +1,4 @@
-// Cart Controller
+// cartcontroller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -6,37 +6,57 @@ import 'package:get/get.dart';
 class CartController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User?> _currentUser = Rx<User?>(null);
-  final RxList<Map<String, dynamic>> _cartItems =
-      RxList<Map<String, dynamic>>([]);
+  final RxList<Map<String, dynamic>> _cartItems = RxList<Map<String, dynamic>>([]);
+
   @override
   void onInit() {
     super.onInit();
     _currentUser.value = _auth.currentUser;
     _currentUser.listen((user) {
       if (user != null) {
-        // Load cart items from Fireabse(implementation in step 5)
         loadCartItems();
       }
     });
   }
 
-  void addToCart(String imgUrl, String name, String price) {
+
+
+  void addToCart(String imgUrl, String name, String price, int quantity, String selectedSize, String selectedColor) {
     if (_currentUser.value != null) {
       _cartItems.add({
         'imgUrl': imgUrl,
         'name': name,
         'price': price,
+        'quantity': quantity,
+        'size': selectedSize,
+        'color': selectedColor,
       });
-      // Add product to cart in Firebase (implementation in step ..)
-      addItemToCartFirebase(imgUrl, name, price);
+      addItemToCartFirebase(imgUrl, name, price, quantity, selectedSize, selectedColor);
     }
   }
 
-  void removeFromCart(int index) {
+  Future<void> addItemToCartFirebase(String imgUrl, String name, String price, int quantity, String selectedSize, String selectedColor) async {
     if (_currentUser.value != null) {
-      final item = _cartItems.removeAt(index);
-      // Remove product from cart in Firebase(implementation in step ..)
-      removeItemFromCartFirebase(item['imgUrl']);
+      final uid = _currentUser.value!.uid;
+      final cartRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('cart');
+      await cartRef.add({
+        'imgUrl': imgUrl,
+        'name': name,
+        'price': price,
+        'quantity': quantity,
+        'size': selectedSize,
+        'color': selectedColor,
+      });
+    }
+  }
+
+  void removeFromCart(String imgUrl) {
+    if (_currentUser.value != null) {
+      _cartItems.removeWhere((item) => item['imgUrl'] == imgUrl);
+      removeItemFromCartFirebase(imgUrl);
     }
   }
 
@@ -50,7 +70,6 @@ class CartController extends GetxController {
           .doc(uid)
           .collection('cart');
 
-      // Get cart items form Firebase Firestore
       final cartSnapshot = await cartRef.get();
       _cartItems.clear();
       for (var doc in cartSnapshot.docs) {
@@ -59,59 +78,63 @@ class CartController extends GetxController {
           'imgUrl': data['imgUrl'],
           'name': data['name'],
           'price': data['price'],
+          'quantity': data['quantity'] ?? 1,
         });
       }
     }
   }
 
-  Future<void> addItemToCartFirebase(
-      String imgUrl, String name, String price) async {
-    if (_currentUser.value != null) {
-      // Implement Logic to add the product detail to the user's collection in Firebase
-      final uid = _currentUser.value!.uid;
-      final cartRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('cart');
-      // Add product details to the user's cart collection
-      await cartRef.add({
-        'imgUrl': imgUrl,
-        'name': name,
-        'price': price,
-      });
-    }
-  }
 
   Future<void> removeItemFromCartFirebase(String imgUrl) async {
     if (_currentUser.value != null) {
-      // Implement logic to remove the product from the user's collection based on the _currentUserID
       final uid = _currentUser.value!.uid;
       final cartRef = FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .collection('cart');
 
-      // Get a reference to the document containing the item
-      final itemRef = await cartRef
-          .where('imgUrl', isEqualTo: imgUrl)
-          .get()
-          .then((snapshot) {
-        if (snapshot.docs.isNotEmpty) {
-          return snapshot.docs.first.reference;
-        } else {
-          return null;
-        }
-      });
-
-      // Check if the item reference is valid before deleting
-      if (itemRef != null) {
-        await itemRef.delete();
-        print("Item with imgUrl: $imgUrl deleteed successfully from Firebase");
-      } else {
-        print("Item with imgUrl: $imgUrl not found in Firebase cart");
+      final querySnapshot = await cartRef.where('imgUrl', isEqualTo: imgUrl).get();
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
       }
+      print("Item with imgUrl: $imgUrl deleted successfully from Firebase");
     } else {
       print("No user logged in. Cannot delete item from Firebase storage");
+    }
+  }
+
+  void incrementQuantity(String imgUrl) {
+    final index = _cartItems.indexWhere((item) => item['imgUrl'] == imgUrl);
+    if (index != -1) {
+      _cartItems[index]['quantity'] = (_cartItems[index]['quantity'] ?? 1) + 1;
+      updateQuantityInFirebase(imgUrl, _cartItems[index]['quantity']);
+    }
+  }
+
+  void decrementQuantity(String imgUrl) {
+    final index = _cartItems.indexWhere((item) => item['imgUrl'] == imgUrl);
+    if (index != -1) {
+      final currentQuantity = _cartItems[index]['quantity'] ?? 1;
+      if (currentQuantity > 1) {
+        _cartItems[index]['quantity'] = currentQuantity - 1;
+        updateQuantityInFirebase(imgUrl, _cartItems[index]['quantity']);
+      }
+    }
+  }
+
+
+  Future<void> updateQuantityInFirebase(String imgUrl, int quantity) async {
+    if (_currentUser.value != null) {
+      final uid = _currentUser.value!.uid;
+      final cartRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('cart');
+
+      final querySnapshot = await cartRef.where('imgUrl', isEqualTo: imgUrl).get();
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({'quantity': quantity});
+      }
     }
   }
 }

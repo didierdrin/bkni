@@ -1,4 +1,3 @@
-// In a separate file (e.g., firebaseOptions.dart)
 import 'package:firebase_core/firebase_core.dart';
 
 class MyCustomFirebaseOptions extends FirebaseOptions {

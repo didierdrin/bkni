@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bkni/src/help.dart';
+import 'package:bkni/src/orderhistory.dart';
+import 'package:bkni/src/settings.dart';
 
 import 'cart.dart';
 import 'package:bkni/src/currentprofile.dart';
@@ -19,9 +21,14 @@ import 'favorite.dart';
 // import 'profile.dart';
 import 'notifications.dart';
 
+import 'package:get/get.dart';
+import 'package:bkni/src/cartcontroller.dart';
+
 class ControlPage extends StatefulWidget {
-  const ControlPage({super.key, required this.customIndex});
+  const ControlPage({super.key, required this.customIndex, required this.product});
   final int customIndex;
+  final ProductData product; 
+  
   @override
   State<ControlPage> createState() => _ControlPageState();
 }
@@ -84,12 +91,13 @@ class _ControlPageState extends State<ControlPage> {
         leading: Builder(builder: (BuildContext context) {
           return InkWell(
             onTap: () => Scaffold.of(context).openDrawer(),
-            child: SvgPicture.asset(
+            child: const Icon(Icons
+                .menu), /* SvgPicture.asset(
               logoName,
               height: 4,
               width: 4,
               fit: BoxFit.scaleDown,
-            ),
+            ), */
           );
         }), // Text(widget.title),
         centerTitle: true,
@@ -158,7 +166,7 @@ class _ControlPageState extends State<ControlPage> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (_) => ControlPage(
+                                  builder: (_) => ControlPage(product: widget.product,
                                         customIndex:
                                             FirebaseAuth.instance.currentUser ==
                                                     null
@@ -173,35 +181,42 @@ class _ControlPageState extends State<ControlPage> {
               ),
               ListTile(
                 onTap: () {
+                  // ai check here
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const CartPage(
-                              name: "Cart List",
-                              imgUrl: "Cart item from list",
-                              price: "State Management - GetX")));
+                          builder: (_) => CartPage(
+                                product: widget.product,
+                              )));
                 },
                 leading: const Icon(Icons.shopping_cart),
                 title: const Text("My Cart"), // Order History
               ),
               ListTile(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const HelpPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const OrderHistoryPage()));
                 },
                 leading: const Icon(Icons.history_rounded),
                 title: const Text("Order History"), // Order History
               ),
               ListTile(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> const HelpPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const HelpPage()));
                 },
                 leading: const Icon(Icons.help),
                 title: const Text("Help"), // Order History
               ),
-              const ListTile(
-                leading: Icon(Icons.settings_outlined),
-                title: Text("Settings"),
+              ListTile(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const SettingsPage()));
+                },
+                leading: const Icon(Icons.settings_outlined),
+                title: const Text("Settings"),
               ),
               const Spacer(),
               ListTile(

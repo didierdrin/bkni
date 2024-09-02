@@ -16,7 +16,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         scrolledUnderElevation: 0.0,
         centerTitle: true,
         title: const Text("Notifications"),
@@ -24,13 +24,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             statusBarColor: Colors.transparent,
             statusBarBrightness: Brightness.light,
             statusBarIconBrightness: Brightness.dark),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.close)),
-        ],
+      
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -53,12 +47,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   itemCount: docs.length,
                   itemBuilder: (_, index) {
                     final data = docs[index].data();
-                    return ListTile(
-                      title: Text(data["title"]),
-                      subtitle: Text(data["description"]),
-                      onTap: () {
-                        // Check official page.
-                      },
+                    return Card(
+                      elevation: 1,
+                      child: ListTile(
+                        title: Text(data["title"]),
+                        subtitle: Text(data["description"]),
+                        onTap: () {
+                          // Check official page.
+                        },
+                      ),
                     );
                   },
                 ),

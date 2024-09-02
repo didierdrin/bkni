@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -42,33 +42,29 @@ class HelpbotController extends GetxController {
   }
 
   Future<String> _askQuestion(String question) async {
-    // Replace "YOUR_API_KEY" with your actual Google Generative AI API key
-    const String apiKey = "AIzaSyBbzbViHnvW4fJamrYr6FxWythUVXdSYMs";
-    const String url =
-        "https://language.googleapis.com/v1/projects/<project_id>/locations/global/models/<model_id>/generateText";
-    final Map<String, String> headers = {
-      "Authorization": "Bearer $apiKey",
-      "Content-Type": "application/json"
-    };
-    final String body = jsonEncode({
-      "inputs": [
-        {"text": question}
-      ],
-    });
+  // Replace "YOUR_API_KEY" with your actual Google Generative AI API key
+  const String apiKey = "AIzaSyBbzbViHnvW4fJamrYr6FxWythUVXdSYMs";
 
-    final response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
+  final model = GenerativeModel(
+    model: 'gemini-1.5-flash-latest',
+    apiKey: apiKey,
+  );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final String generatedText = data["generations"][0]["text"];
-      await saveMessage("You", question);
-      await saveMessage("Bukoni", generatedText);
-      return generatedText;
-    } else {
-      return "Error: ${response.statusCode}";
-    }
+  // Save the question message first
+  await saveMessage("You", question);
+
+  // Use the question as the prompt for the model
+  final content = [Content.text(question)];
+  final response = await model.generateContent(content);
+
+  // Check if the response is not null before saving it
+  if (response.text != null) {
+    await saveMessage("Bukoni", response.text.toString());
   }
+
+  return response.text ?? "Error: Response text was null";
+}
+
 
   Future<void> saveMessage(String role, String message) async {
     if (_currentUser.value != null) {
