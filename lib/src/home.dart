@@ -2,15 +2,13 @@
 
 import 'package:bkni/colors.dart';
 // import 'package:bkni/src/favorite.dart';
+import 'package:bkni/src/cartcontroller.dart';
+import 'package:bkni/src/cart.dart';
 import 'package:bkni/src/product.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// imports
-// import 'search.dart';
-// import 'notifications.dart';
-// import 'profile.dart';
-// import 'package:bkni/colors.dart';
 import 'branded.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'model.dart';
@@ -135,8 +133,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  final int _counter = 0;
   final String logoName = "assets/images/logo_vector.svg";
   final String imageName = "assets/images/play_store_512.png";
   final String imageSample = "assets/images/img_sample.png";
@@ -172,223 +168,72 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // CollectionReference inventory = FirebaseFirestore.instance.collection("inventory");
     return Scaffold(
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 80.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // New Collection Container
-              const NewCollectionContainer(),
-
-              // Row Brand
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Brand",
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+      body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        future: FirebaseFirestore.instance.collection("products").get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          }
+          final docs = snapshot.data!.docs;
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 16.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const NewCollectionContainer(),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Custom Garments",
+                        style: TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
-
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Hard Coded Containers. ListBuilder
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SortedPage()));
-                      },
-                      child: Container(
-                        width: 82.0,
-                        height: 82.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50.0)),
-                        child: Center(
-                            child: Image.asset(
-                          bukon1,
-                          fit: BoxFit.cover,
-                          height: 70,
-                          width: 70,
-                        )),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SortedPage()));
-                      },
-                      child: Container(
-                        width: 82.0,
-                        height: 82.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50.0)),
-                        child: Center(
-                            child: SvgPicture.asset(
-                          aflimbaSvg,
-                          fit: BoxFit.cover,
-                          height: 60,
-                          width: 60,
-                        )),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SortedPage()));
-                      },
-                      child: Container(
-                        width: 82.0,
-                        height: 82.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50.0)),
-                        child: Center(
-                          child: Text(
-                            "fra.",
-                            style: GoogleFonts.playfairDisplay(
-                                textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SortedPage()));
-                      },
-                      child: Container(
-                        width: 82.0,
-                        height: 82.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50.0)),
-                        child: Center(
-                            child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: SvgPicture.asset(
-                            isunzuSvg,
-                            fit: BoxFit.fill,
-                            height: 80,
-                            width: 80,
-                          ),
-                        )),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SortedPage()));
-                      },
-                      child: Container(
-                        width: 82.0,
-                        height: 82.0,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50.0)),
-                        child: Center(
-                            child: SvgPicture.asset(
-                          moshionsSvg,
-                          fit: BoxFit.cover,
-                          height: 80,
-                          width: 80,
-                        )),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                  ],
-                ),
-              ),
-
-              // Row New Shoes
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "New Gadgets & Garmets",
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              SizedBox(
-                height: 250,
-                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: FirebaseFirestore.instance
-                      .collection("products")
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-
-                    if (snapshot.hasData) {
-                      final docs = snapshot.data!.docs;
-                      return GridView.builder(
-                        shrinkWrap: false,
-                        itemCount: docs.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemBuilder: (_, index) {
-                          final data = ProductData.fromMap(docs[index].data());
-                          return Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ProductPage(
-                                        product: ProductData.fromMap(
-                                            docs[index].data())),
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                elevation: 1.0,
-                                //width: double.infinity,
-                                // Adjust this width as needed
-                                child: Ink(
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 80.0),
+                sliver: SliverGrid(
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final data =
+                          ProductData.fromMap(docs[index].data());
+                      return Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProductPage(
+                                  product: ProductData.fromMap(
+                                      docs[index].data()),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 1.0,
+                            clipBehavior: Clip.antiAlias,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Ink(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
-                                    //border: Border.all(color: Colors.black),
                                     borderRadius: BorderRadius.circular(20),
                                     color: Colors.transparent,
                                   ),
@@ -396,87 +241,147 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      AspectRatio(
-                                        aspectRatio: 16 /
-                                            9, // Adjust this ratio as needed
-                                        child: FadeInImage(
-                                          placeholder: AssetImage(imageSample),
-                                          image: NetworkImage(data.img_url),
+                                      Expanded(
+                                        flex: 3,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: FadeInImage(
+                                            placeholder:
+                                                AssetImage(imageSample),
+                                            image: NetworkImage(data.img_url),
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            imageErrorBuilder: (context,
+                                                error, stackTrace) {
+                                              return Image.asset(
+                                                imageSample,
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      Text(
-                                        data.name,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              data.name,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "RWF ${data.price.toStringAsFixed(0)}",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.green,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Expanded(
+                                              child: Text(
+                                                data.description,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Text(
-                                        "RWF ${data.price}",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        data.description,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      // Add more items here if needed
                                     ],
                                   ),
                                 ),
-                              ),
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: Material(
+                                    elevation: 2,
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Get.find<CartController>().addToCart(
+                                          data.img_url,
+                                          data.name,
+                                          data.price.toString(),
+                                          1,
+                                          data.available_sizes.isNotEmpty
+                                              ? data.available_sizes.first
+                                              : '',
+                                          data.available_colors.isNotEmpty
+                                              ? data.available_colors.first
+                                              : '',
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                'Added "${data.name}" to cart'),
+                                            action: SnackBarAction(
+                                              label: 'View Cart',
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) => CartPage(
+                                                      product: data,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.add_shopping_cart,
+                                          size: 22,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       );
-                    }
-
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ),
-
-              const Divider(
-                thickness: 1,
-                endIndent: 20,
-                indent: 20,
-              ),
-              // Forum
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Community Forum",
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              const SizedBox(
-                height: 100,
-                child: Column(
-                  children: [
-                    Text(
-                      "\"Jordan Cactus is trending after it's release early this June.\"",
-                      textAlign: TextAlign.left,
-                    ),
-                    Text(
-                      "- User Anonymous",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                  ],
+                    },
+                    childCount: docs.length,
+                  ),
                 ),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 }
 
 class NewCollectionContainer extends StatelessWidget {
-  // ...
   const NewCollectionContainer({super.key});
   final String mainImg =
       "https://res.cloudinary.com/dezvucnpl/image/upload/v1714929604/mainone_vqrus3.jpg";
@@ -492,8 +397,6 @@ class NewCollectionContainer extends StatelessWidget {
         if (snapshot.hasError) {
           // Handle error
         } else if (snapshot.hasData) {
-          final List<DocumentSnapshot> docs = snapshot.data!.docs;
-
           return Container(
             //height: 170.0,
             width: double.infinity,

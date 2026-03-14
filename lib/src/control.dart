@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bkni/src/community.dart';
 import 'package:bkni/src/help.dart';
 import 'package:bkni/src/orderhistory.dart';
 import 'package:bkni/src/settings.dart';
@@ -181,7 +182,6 @@ class _ControlPageState extends State<ControlPage> {
               ),
               ListTile(
                 onTap: () {
-                  // ai check here
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -190,7 +190,18 @@ class _ControlPageState extends State<ControlPage> {
                               )));
                 },
                 leading: const Icon(Icons.shopping_cart),
-                title: const Text("My Cart"), // Order History
+                title: const Text("My Cart"),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const CommunityPage()),
+                  );
+                },
+                leading: const Icon(Icons.forum_outlined),
+                title: const Text("Community Forum"),
               ),
               ListTile(
                 onTap: () {
@@ -200,7 +211,7 @@ class _ControlPageState extends State<ControlPage> {
                           builder: (_) => const OrderHistoryPage()));
                 },
                 leading: const Icon(Icons.history_rounded),
-                title: const Text("Order History"), // Order History
+                title: const Text("Order History"),
               ),
               ListTile(
                 onTap: () {
