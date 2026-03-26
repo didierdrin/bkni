@@ -149,7 +149,6 @@ class _MomoPageState extends State<MomoPage> {
     final Customer customer = Customer(email: "customer@customer.com");
 
     final Flutterwave flutterwave = Flutterwave(
-        context: context,
         publicKey: "FLWPUBK_TEST-0ecb93e6c52b1c1c7625b9368f4992af-X",
         currency: selectedCurrency,
         redirectUrl: 'https://facebook.com',
@@ -159,7 +158,7 @@ class _MomoPageState extends State<MomoPage> {
         paymentOptions: "card, payattitude, barter, bank transfer, ussd",
         customization: Customization(title: "Test Payment"),
         isTestMode: isTestMode);
-    final ChargeResponse response = await flutterwave.charge();
+    final ChargeResponse response = await flutterwave.charge(context);
     if (response.status == "successful") {
       // Show payment confirmation dialog
       showLoading(response.toString());
