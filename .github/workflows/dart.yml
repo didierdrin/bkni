@@ -44,10 +44,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK 34 packages
+      - name: Install Android SDK 36 packages
         run: |
           yes | sdkmanager --licenses
-          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+          sdkmanager "platforms;android-36"
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
