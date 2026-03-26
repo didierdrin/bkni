@@ -41,9 +41,13 @@ jobs:
           flutter --version
           flutter doctor -v
 
-      - name: Install Android SDK 34
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 34 packages
         run: |
-          yes | sdkmanager "platforms;android-34" "build-tools;34.0.0"
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
