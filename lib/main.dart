@@ -10,6 +10,7 @@ import 'package:bkni/src/orderhistorycontroller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'colors.dart';
@@ -34,6 +35,7 @@ Future<void> initializeFirebase() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
+  await GoogleSignIn.instance.initialize();
   Get.put(CartController());
   Get.put(FavoriteController());
   Get.put(OrderHistoryController());

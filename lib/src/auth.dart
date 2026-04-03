@@ -75,21 +75,25 @@ class AuthService {
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser =
-          await GoogleSignIn(scopes: <String>['email']).signIn();
-      if (googleUser == null) {
-        return null; // user cancelled
-      }
+      final GoogleSignInAccount googleUser =
+          await GoogleSignIn.instance.authenticate(
+        scopeHint: <String>['email'],
+      );
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      // Create credential using only idToken (accessToken no longer exposed)
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
 
       return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled ||
+          e.code == GoogleSignInExceptionCode.interrupted) {
+        return null;
+      }
+      print("Error signing in: $e");
+      return null;
     } catch (e) {
       print("Error signing in: $e");
       return null;
