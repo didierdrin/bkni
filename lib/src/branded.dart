@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'notifications.dart';
 import 'product.dart';
 import 'home.dart'; // Import this to use ProductData
+import 'product_image.dart';
 
 class SortedPage extends StatefulWidget {
   const SortedPage({super.key});
@@ -120,8 +121,8 @@ class _SortedPageState extends State<SortedPage> {
                               child: ClipRRect(
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(10)),
-                                child: Image.network(
-                                  data.img_url,
+                                child: ProductImage(
+                                  src: data.img_url,
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                 ),

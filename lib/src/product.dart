@@ -10,6 +10,7 @@ import 'package:bkni/color_utils.dart';
 // Firebase import
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "product_service.dart";
+import 'product_image.dart';
 
 class ProductPage extends StatefulWidget {
   final ProductData product;
@@ -72,7 +73,7 @@ class _ProductPageState extends State<ProductPage> {
                   widget.product.img_url,
                   ...widget.product.additional_images
                 ]
-                    .map((item) => Image.network(item, fit: BoxFit.cover))
+                    .map((item) => ProductImage(src: item, fit: BoxFit.cover))
                     .toList(),
               ),
             ),

@@ -1,9 +1,11 @@
 // orderhistory.dart
 import 'package:flutter/material.dart';
+import 'package:bkni/src/product_image.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'orderhistorycontroller.dart';
+import 'product_image.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({super.key});
@@ -73,8 +75,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                           itemBuilder: (context, itemIndex) {
                             final item = order['items'][itemIndex];
                             return ListTile(
-                              leading: Image.network(
-                                item['imgUrl'] ?? '',  // Assuming you have an image URL
+                              leading: ProductImage(
+                                src: item['imgUrl'] ?? '',
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,

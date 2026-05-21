@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'branded.dart';
+import 'package:bkni/src/product_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'model.dart';
 // Database
@@ -99,12 +100,15 @@ class ProductData {
       available_colors: List<String>.from(map['available_colors'] ?? []),
       available_sizes: List<String>.from(map['available_sizes'] ?? []),
       tags: List<String>.from(map['tags'] ?? []),
-      img_url: map['img_url'] ?? '',
+      img_url: normalizeProductImageSrc(map['img_url'] ?? ''),
       brand_uid: map['brand_uid'] ?? '',
       date_added: (map['date_added'] as Timestamp).toDate(),
       last_updated: (map['last_updated'] as Timestamp).toDate(),
       is_active: map['is_active'] ?? false,
-      additional_images: List<String>.from(map['additional_images'] ?? []),
+      additional_images: List<String>.from(map['additional_images'] ?? [])
+          .map((img) => normalizeProductImageSrc(img.toString()))
+          .where((img) => img.isNotEmpty)
+          .toList(),
       bar_code: map['bar_code'] ?? '',
       lead_time: map['lead_time'] ?? '',
       product_id: map['product_id'] ?? 0,
@@ -246,22 +250,23 @@ class _HomePageState extends State<HomePage> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8.0),
-                                          child: FadeInImage(
-                                            placeholder:
-                                                AssetImage(imageSample),
-                                            image: NetworkImage(data.img_url),
+                                          child: ProductImage(
+                                            src: data.img_url,
                                             fit: BoxFit.cover,
                                             width: double.infinity,
                                             height: double.infinity,
-                                            imageErrorBuilder: (context,
-                                                error, stackTrace) {
-                                              return Image.asset(
-                                                imageSample,
-                                                fit: BoxFit.cover,
-                                                width: double.infinity,
-                                                height: double.infinity,
-                                              );
-                                            },
+                                            placeholder: Image.asset(
+                                              imageSample,
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                            ),
+                                            errorWidget: Image.asset(
+                                              imageSample,
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                            ),
                                           ),
                                         ),
                                       ),
