@@ -360,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                                       child: const Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: Icon(
-                                          Icons.add_shopping_cart,
+                                          Icons.shopping_cart_outlined,
                                           size: 22,
                                           color: Colors.black87,
                                         ),
