@@ -6,6 +6,7 @@ import 'package:bkni/src/cartcontroller.dart';
 import './cart.dart';
 import 'package:bkni/src/favorite_controller.dart';
 import 'package:bkni/src/home.dart'; // Import this to use ProductData
+import 'package:bkni/src/pricing.dart';
 import 'package:bkni/color_utils.dart';
 // Firebase import
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -142,19 +143,39 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'RWF ${widget.product.price.toStringAsFixed(2)}',
+                      'RWF ${getEffectivePrice(widget.product.price, widget.product.discount_price).toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Theme.of(context).primaryColor,
                           ),
                     ),
-                    if (widget.product.discount_price > 0) ...[
+                    if (isOnSale(widget.product.price, widget.product.discount_price)) ...[
                       const SizedBox(height: 4),
-                      Text(
-                        'RWF ${widget.product.discount_price.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
+                      Row(
+                        children: [
+                          Text(
+                            'RWF ${widget.product.price.toStringAsFixed(2)}',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey,
+                                ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent,
+                              borderRadius: BorderRadius.circular(4),
                             ),
+                            child: Text(
+                              '-${getDiscountPercent(widget.product.price, widget.product.discount_price)}%',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                     const SizedBox(height: 16),
@@ -272,7 +293,8 @@ class _ProductPageState extends State<ProductPage> {
                 Get.find<CartController>().addToCart(
                   widget.product.img_url,
                   widget.product.name,
-                  widget.product.price.toString(),
+                  getEffectivePrice(widget.product.price, widget.product.discount_price)
+                      .toString(),
                   _quantity,
                   _selectedSize,
                   _selectedColor,

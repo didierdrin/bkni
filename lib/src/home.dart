@@ -5,6 +5,8 @@ import 'package:bkni/colors.dart';
 import 'package:bkni/src/cartcontroller.dart';
 import 'package:bkni/src/cart.dart';
 import 'package:bkni/src/product.dart';
+import 'package:bkni/src/pricing.dart';
+import 'package:bkni/src/app_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:flutter/services.dart';
@@ -188,6 +190,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 16.0),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
+                    const AppBannerBar(),
                     const NewCollectionContainer(),
                     const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -288,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
-                                              "RWF ${data.price.toStringAsFixed(0)}",
+                                              "RWF ${getEffectivePrice(data.price, data.discount_price).toStringAsFixed(0)}",
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
@@ -296,6 +299,15 @@ class _HomePageState extends State<HomePage> {
                                                 fontSize: 13,
                                               ),
                                             ),
+                                            if (isOnSale(data.price, data.discount_price))
+                                              Text(
+                                                "RWF ${data.price.toStringAsFixed(0)}  ·  -${getDiscountPercent(data.price, data.discount_price)}%",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
                                             const SizedBox(height: 4),
                                             Expanded(
                                               child: Text(
@@ -326,7 +338,8 @@ class _HomePageState extends State<HomePage> {
                                         Get.find<CartController>().addToCart(
                                           data.img_url,
                                           data.name,
-                                          data.price.toString(),
+                                          getEffectivePrice(data.price, data.discount_price)
+                                              .toString(),
                                           1,
                                           data.available_sizes.isNotEmpty
                                               ? data.available_sizes.first

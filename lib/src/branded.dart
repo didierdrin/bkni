@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'notifications.dart';
 import 'product.dart';
 import 'home.dart'; // Import this to use ProductData
+import 'pricing.dart';
 import 'product_image.dart';
 
 class SortedPage extends StatefulWidget {
@@ -141,9 +142,15 @@ class _SortedPageState extends State<SortedPage> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    "RWF ${data.price.toStringAsFixed(2)}",
+                                    "RWF ${getEffectivePrice(data.price, data.discount_price).toStringAsFixed(2)}",
                                     style: const TextStyle(color: Colors.grey),
                                   ),
+                                  if (isOnSale(data.price, data.discount_price))
+                                    Text(
+                                      "RWF ${data.price.toStringAsFixed(2)}  ·  -${getDiscountPercent(data.price, data.discount_price)}%",
+                                      style: TextStyle(
+                                          color: Colors.grey[600], fontSize: 11),
+                                    ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,

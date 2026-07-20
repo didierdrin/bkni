@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:bkni/src/favorite_controller.dart';
 import 'package:bkni/src/home.dart'; // Import this to use ProductData
+import 'package:bkni/src/pricing.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -30,11 +31,18 @@ class _FavoritePageState extends State<FavoritePage> {
           itemCount: favoriteController.favoriteItems.length,
           itemBuilder: (context, index) {
             final item = favoriteController.favoriteItems[index];
+            final listPrice = double.tryParse('${item['price']}') ?? 0;
+            final salePrice = (item['discount_price'] is num)
+                ? (item['discount_price'] as num).toDouble()
+                : double.tryParse('${item['discount_price']}') ?? 0;
             return Card(
               elevation: 1.0,
               child: ListTile(
                 title: Text(item['name']),
-                subtitle: Text("Price: ${item['price']}"),
+                subtitle: Text(
+                  "RWF ${getEffectivePrice(listPrice, salePrice).toStringAsFixed(0)}"
+                  "${isOnSale(listPrice, salePrice) ? '  (−${getDiscountPercent(listPrice, salePrice)}%)' : ''}",
+                ),
                 trailing: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
